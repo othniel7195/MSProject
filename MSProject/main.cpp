@@ -75,6 +75,11 @@ void twistArray(int i){
 //
 //7     8     9
 //
+
+//1  2  3  4
+//5  6  7  8
+//9  10 11 12
+//13 14 15 16
 //输出:
 //
 //3
@@ -88,41 +93,33 @@ void twistArray(int i){
 //7
 
 //斜45度打印二维数组
-void print45C(int mutex[3][3],int row,int col)
+void print45C(int mutex[4][4],int row,int col)
 {
     if (mutex == NULL || row <=0 || col <= 0) return;
     
-    for (int r = 0, c = col - 1; c >= 0; c--) {
+    for (int c = col - 1; c >= 0; c--) {
+        cout << mutex[0][c] <<" ";
+        for (int r = 0, rc=c; rc +1 <= col -1 ; ) {
+            cout << mutex[++r][++rc]<< " ";
+        }
         
-        cout << mutex[r][c]<<"(-"<< r << "," <<  c << ")" << " ";
-        for(int k=r,l=c;k+1<=row-1&&l+1<=col-1;){
-             //右下角没越界，就输出这数字
-            int nk = ++k;
-            int nl = ++l;
-            cout<<mutex[nk][nl]<<"( "<< nk << "," <<  nl << ")" << " ";
+        cout<<endl;
+    }
+    
+    for (int r = 1; r <= row -1; r++) {
+        cout << mutex[r][0] << " ";
+        for (int lr = r,c=0; lr+1<=row-1;) {
+            cout<<mutex[++lr][++c]<<" ";
         }
         cout<<endl;
     }
     
-    cout<<"___________________________-"<<endl;
-    
-    for(int i=1,j=0;i<=row-1;i++)   //从第一列的第二行循环到最后一行，输出对角线
-    {
-        cout<<mutex[i][j]<<" "; //输出对角线的开始数字
-        for(int k=i,l=j;k+1<=row-1&&l+1<=col-1;)    //右下角没越界，就输出这数字
-            cout<<mutex[++k][++l]<<" ";
-        cout<<endl;
-        
-    }
-
-    
     cout<< " " <<endl;
-    cout<< "row:"<< row << " " << "col:" << col << endl;
 }
 
 int main(int argc, const char * argv[]) {
-    //int mutex[4][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
-    int mutex[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
+    int mutex[4][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+   // int mutex[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
     int row = sizeof(mutex) / sizeof(mutex[0]);
     int col = sizeof(mutex) / sizeof(mutex[0][0]) / row;
     
