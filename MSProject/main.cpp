@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include "binarytree.h"
 
 using namespace std;
 
@@ -130,5 +131,16 @@ int main(int argc, const char * argv[]) {
     
     cout << " " << endl;
     std::cout << "Hello, World!\n";
+    
+    binarytree b;
+    cout <<"递归前序遍历"<<endl;
+    b.preOrder(&b.root_node);
+    
+    
+    
+    
+
+    
+    
     return 0;
 }
