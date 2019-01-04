@@ -10,25 +10,26 @@
 #define binarytree_hpp
 
 #include <stdio.h>
+#include <iostream>
 
+using namespace std;
 
 struct Node {
     int data;
     Node *left;
     Node *right;
-    Node(int data){
-        this->data = data;
+    Node(int i){
+        data = i;
+        left = right = NULL;
     }
 };
 
 class binarytree {
     
-    
-    ~binarytree();
-    
 public:
-    Node root_node = 1;
+    Node *root_node ;
     binarytree();
+    ~binarytree();
     //前序
     void preOrder(Node *n);
     //中序

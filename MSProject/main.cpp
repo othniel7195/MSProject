@@ -134,12 +134,19 @@ int main(int argc, const char * argv[]) {
     
     binarytree b;
     cout <<"递归前序遍历"<<endl;
-    b.preOrder(&b.root_node);
-    
-    
+    Node *rnode = b.root_node;
+    b.preOrder(rnode);
+    cout<<endl;
+    cout <<"递归中序遍历"<<endl;
+    b.midOrder(rnode);
+    cout<<endl;
+    cout <<"递归后序遍历"<<endl;
+    b.postOrder(rnode);
+
     
     
 
+    getchar();
     
     
     return 0;
