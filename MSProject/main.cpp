@@ -8,6 +8,9 @@
 
 #include <iostream>
 #include "binarytree.h"
+#include "kdtree.h"
+#include "linked.hpp"
+#include <unistd.h>
 
 using namespace std;
 
@@ -118,20 +121,35 @@ void print45C(int mutex[4][4],int row,int col)
     cout<< " " <<endl;
 }
 
-int main(int argc, const char * argv[]) {
-    int mutex[4][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
-   // int mutex[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
-    int row = sizeof(mutex) / sizeof(mutex[0]);
-    int col = sizeof(mutex) / sizeof(mutex[0][0]) / row;
-    
-    print45C(mutex,row,col);
-    cout << " " << endl;
-    
-    twistArray(1);
-    
-    cout << " " << endl;
-    std::cout << "Hello, World!\n";
-    
+
+//验证45度打印矩阵
+void test1(){
+     int mutex[4][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+     // int mutex[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
+     int row = sizeof(mutex) / sizeof(mutex[0]);
+     int col = sizeof(mutex) / sizeof(mutex[0][0]) / row;
+     
+     print45C(mutex,row,col);
+     cout << " " << endl;
+}
+
+//验证输出螺旋数组
+void test2(){
+     int mutex[4][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+     // int mutex[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
+     int row = sizeof(mutex) / sizeof(mutex[0]);
+     int col = sizeof(mutex) / sizeof(mutex[0][0]) / row;
+     
+     print45C(mutex,row,col);
+     cout << " " << endl;
+     
+     twistArray(1);
+     
+     cout << " " << endl;
+}
+
+//验证二叉树
+void test3(){
     binarytree b;
     cout <<"递归前序遍历"<<endl;
     Node *rnode = b.root_node;
@@ -142,12 +160,163 @@ int main(int argc, const char * argv[]) {
     cout<<endl;
     cout <<"递归后序遍历"<<endl;
     b.postOrder(rnode);
+    cout << endl;
+    cout <<"层次遍历"<<endl;
+    b.levelOrder(rnode);
+    cout << endl;
+    cout <<"有换行的层次遍历"<<endl;
+    b.levelEndlOrder(rnode);
+    b.reverse_node(rnode);
+}
+//验证kd树
+void test4(){
+    KDTree kdtree;
+    //{(3,6),(7,5),(3,1),(6,2),(9,1),(2,7)}
+    int data[6][2] = {{3,6},{7,5},{3,1},{6,2},{9,1},{2,7}};
+    KDNode *root = NULL;
+    for (int i = 0; i < 6; i++) {
+        
+        int data2[2];
+        data2[0] = data[i][0];
+        data2[1] = data[i][1];
+        
+        cout<<root<<endl;
+        kdtree.insert_kdtree_node(root, data2, 0, 2);
+    }
+    
+}
+
+//验证链表反转
+void test5(){
+    
+    linked lk;
+    linkedNode *newHead = lk.reverse_linked(lk.head);
+    lk.head = newHead;
+}
+
+
+/**
+ 
+ 1.判断字符串是否形如“192.168.1.1”
+ 
+ 2.字符串两端含有空格视为合法ip，形如“    192.168.1.1    ”
+ 
+ 3.字符串中间含有空格视为非法ip，形如“192.168. 1.2”
+ 
+ 4.字符串0开头视为不合法ip，形如192.168.01.1
+ 
+ 5.字符串0.0.0.0视为合法ip
+ */
+
+bool checkIPv4(string ip)
+{
+    ip.erase(0,ip.find_first_not_of(" "));
+    ip.erase(ip.find_last_not_of(" ") + 1);
+    const char *p = ip.c_str();
+    
+    static const char digits[] = "0123456789";
+    int saw_digit, octets, ch;
+    saw_digit = 0;/*是否还是处理同一个整数中的不同位*/
+    octets = 0;/*表示已处理整数的个数(.分割的  ==4 才是对的)*/
+    int tp = 0;//第几位
+    while ((ch = *p) != '\0') {
+        *p ++;
+        const char *pch;
+        //查询digits中有没ch
+        if ((pch = strchr(digits, ch)) != NULL) {
+            u_int newi = tp * 10 + (pch - digits);
+            if (saw_digit && tp == 0) return false;/* 用来处理连续的0*/
+            if (newi > 255) return false;//处理大于255的
+            tp = newi;
+            
+            //每次遇到. saw_digit 都会重置为0
+            if (!saw_digit) {
+                
+                if (++octets > 4) return false;
+                saw_digit = 1;
+            }
+            
+        }
+        else if (ch == '.' && saw_digit) {
+            
+                //如果还是.要处理 则octets 不可能是4  == 4
+                if (octets == 4) return false;
+                tp = 0;
+                saw_digit = 0;
+            
+        }
+        else return false;
+        
+    }
+    
+    if (octets < 4) return false;
+    
+    return true;
+}
+
+bool checkIPv42(string ip)
+{
+    //1.去两端空格
+    ip.erase(0,ip.find_first_not_of(" "));
+    ip.erase(ip.find_last_not_of(" ")+1);
+    
+    //string 转char *
+    const char *p = ip.c_str();
+    //遇到.归0，表示处理数据段第一位， 不为0表示处理第一位后面的 且还是遇到.
+    int saw_digit = 0;
+    //.的个数
+    int octets = 0;
+    int ch;
+    
+    static const char digits[] = "0123456789";
+    //位数
+    int tp = 0;
+    
+    while ((ch = *p++) != '\0') {
+        
+        const char *pch;
+        if ((pch = strchr(digits, ch)) != NULL) {
+            long value = tp * 10 + (pch - digits);
+            if (value > 255) return false;
+            
+            if (saw_digit && tp == 0) return false;
+            
+            if (!saw_digit) {
+                if (++octets > 4) return false;
+                saw_digit = 1;
+            }
+        }else if (ch == '.' && saw_digit){
+            if (octets == 4) return false;
+            saw_digit = 0;
+            tp = 0;
+            
+        }else return false;
+        
+    }
+    
+    if (octets < 4) return false;
+    
+    return true;
+    
+}
+
+//验证ipv4合法
+void test6(){
+    const int count = 12;
+    string ips[count] = {"0.0.0.0", "255.255.255.255", "0.10.0.0", " 1.1.1.1", "1.1.1.1 ", " 1.1.1.1 ","1.1.1. 1", "1..2.3", "00.1.1.1", "a.1.1.1","  1.1.1.1  "};
+    for(int i = 0; i < count; i++) {
+        if(checkIPv42(ips[i]))
+            cout <<ips[i]<<"该地址是IPv4地址"<<endl;
+        else
+           cout <<ips[i]<<"该地址不是IPv4地址"<<endl;
+    }
+}
+
+
+int main(int argc, const char * argv[]) {
 
     
-    
-
-    getchar();
-    
+    test6();
     
     return 0;
 }

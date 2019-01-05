@@ -8,6 +8,7 @@
 
 #include "binarytree.h"
 #include <iostream>
+#include <queue>
 
 
 //1.前序遍历（根节点排最先，然后同级先左后右）；
@@ -67,4 +68,111 @@ void binarytree::postOrder(Node *n)
     postOrder(n->left);
     postOrder(n->right);
     cout << n->data << " ";
+}
+
+//层级遍历
+void binarytree::levelOrder(Node *n){
+    
+    queue <Node *> node_q;
+    node_q.push(n);
+    while (!node_q.empty()) {
+        
+        Node* front = node_q.front();
+        cout<< front->data << "";
+        node_q.pop();
+        
+        if (front->left != NULL) {
+            node_q.push(front->left);
+        }
+        if (front->right != NULL) {
+            node_q.push(front->right);
+        }
+    }
+    
+}
+
+//有换行的层级遍历
+void binarytree::levelEndlOrder(Node *n){
+    queue<Node *>node_q;
+    node_q.push(n);
+    Node *level_endl = n;
+    //Node *q_last = n;
+    while (!node_q.empty()) {
+        
+        Node *front = node_q.front();
+        cout<< front->data << endl;
+        node_q.pop();
+        
+        if (front->left != NULL) {
+            node_q.push(front->left);
+            //q_last = front->left;
+        }
+        if (front->right != NULL) {
+            node_q.push(front->right);
+            //q_last = front->right;
+        }
+        
+        if (front == level_endl) {
+            cout<<endl;
+            level_endl = node_q.back();
+        }
+    }
+}
+
+int binarytree::search_value(Node *n, int num){
+    
+    if (n == NULL) return 0;
+    
+    if (num == n->data) return 1;
+    
+    static Node *peek;
+    
+    if (num < n->data) {
+        peek = n->left;
+        
+       return search_value(peek, num);
+    }
+    
+    if (num > n->data) {
+        peek = n->right;
+        return search_value(peek, num);
+    }
+    
+    return 0;
+}
+
+int binarytree::insert_node(Node *&root, int num)
+{
+    if (search_value(root, num) == 0) {
+        
+        if (root == NULL) {
+            root = new Node(num);
+            return 1;
+        }else{
+            if (num < root->data) {
+               return insert_node(root->left, num);
+            }else{
+               return insert_node(root->right, num);
+            }
+        }
+    }
+    
+    return 0;
+}
+
+
+void binarytree::reverse_node(Node *&n){
+    if (n == NULL) return;
+    if (n->left == NULL && n->right == NULL) return;
+    
+    Node *tmp = n->left;
+    n->left = n->right;
+    n->right = tmp;
+    
+    if (n->left) {
+        reverse_node(n->left);
+    }
+    if (n->right) {
+        reverse_node(n->right);
+    }
 }
